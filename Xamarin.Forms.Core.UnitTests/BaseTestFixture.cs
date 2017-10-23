@@ -8,25 +8,21 @@ namespace Xamarin.Forms.Core.UnitTests
 {
 	public class BaseTestFixture
 	{
+		CultureInfo _defaultCulture;
 		[SetUp]
 		public virtual void Setup ()
 		{
-			Device.PlatformServices = new MockPlatformServices();
+			_defaultCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
 
-#if !WINDOWS_PHONE
-			var culture = Environment.GetEnvironmentVariable ("UNIT_TEST_CULTURE");
-			
-			if (!string.IsNullOrEmpty (culture)) {
-				var thead = Thread.CurrentThread;
-				thead.CurrentCulture = new CultureInfo (culture);
-			}
-#endif
+			Device.PlatformServices = new MockPlatformServices();
 		}
 
 		[TearDown]
 		public virtual void TearDown ()
 		{
 			Device.PlatformServices = null;
+			System.Threading.Thread.CurrentThread.CurrentCulture = _defaultCulture;
+
 		}
 	}
 }
